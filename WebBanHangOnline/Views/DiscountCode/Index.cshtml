@@ -1,0 +1,92 @@
+﻿@model PagedList.IPagedList<WebBanHangOnline.Models.EF.DiscountCode>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<style>
+    td {
+        color: black;
+    }
+</style>
+<div style="height: 50px;"></div>
+<!-- breadcrumb -->
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+            Trang chủ
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+            Mã giảm giá
+        </span>
+    </div>
+</div>
+<div class="bg0 p-t-62 p-b-60">
+    <div class="container">
+        <!-- Main content -->
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="card-body table-responsive">
+                <table class="table m-0 table-colored-bordered table-bordered-purple">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Mã áp dụng</th>
+                            <th>Giá trị</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày hết hạn</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.Code</td>
+                                    <td>@item.DiscountPercentage (%)</td>
+                                    <td>
+                                        @if (item.IsUsed == false)
+                                        {
+                                            <span>Chưa sử dụng</span>
+                                        }
+                                        @if (item.IsUsed == true)
+                                        {
+                                            <span>Đã sử dụng</span>
+                                        }
+                                    </td>
+                                    <td>@item.ExpiryDate</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-success">Sao chép mã</a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-6" style="text-align:right;">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <!-- /.card-footer-->
+            <!-- /.card -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+

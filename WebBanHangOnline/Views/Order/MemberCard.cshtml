@@ -1,0 +1,143 @@
+﻿@model WebBanHangOnline.Models.MembershipCardViewModel
+
+@{
+    ViewBag.Title = "MemberCard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Bootstrap select pluings -->
+<link href="~/ContentAD/assets/libs/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+
+<!-- App css -->
+<link href="~/ContentAD/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap-stylesheet">
+<link href="~/ContentAD/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+<link href="~/ContentAD/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-stylesheet">
+<div style="height: 50px;"></div>
+<!-- breadcrumb -->
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+            Trang chủ
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+            Thẻ hội viên
+        </span>
+    </div>
+</div>
+<section class="bg0 p-t-62 p-b-60">
+    <div class="container">
+        <div class="p-b-10">
+
+
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4 class="mt-2 mb-3">Tích điểm hội viên Medicare</h4>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-md-5">
+                                        <img src="~/Feassets/images/blackcard.jpg" class="card-img" alt="...">
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="card-body py-2">
+                                            <h5 class="card-title">Thẻ hội viên</h5>
+                                            <p class="card-text">Mua sắm càng nhiều, ưu đãi càng lớn.</p>
+                                            <p class="card-text"><small class="text-muted">Với mỗi đơn hàng được thực hiện thành công, quý khách được cộng điểm tích lũy.</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Thông tin thẻ hội viên</h4>
+                                    <p class="sub-header">
+                                        Quy đổi điểm tích lũy để nhận ưu đãi khi mua hàng tại Medicare!
+                                    </p>
+
+                                    <form method="post" action="/Order/RedeemPoints">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 form-control-label">Tên chủ thẻ</label>
+                                            <div class="col-sm-7">
+                                                <p class="form-control-static">@Model.FullName</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 form-control-label">Điểm tích lũy</label>
+                                            <div class="col-sm-7">
+                                                <h3 class="form-control-static">@Model.Points</h3>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 form-control-label">Quy đổi điểm</label>
+                                            <div class="col-sm-7">
+                                                <select class="form-control" name="pointsToRedeem" id="ddPointsToRedeem">
+                                                    <option value="">Chọn số điểm</option>
+                                                    @foreach (var option in Model.PointsToRedeemOptions)
+                                                    {
+                                                        <option value="@option">@option điểm = @option / 10% giảm giá</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-offset-4 col-sm-7">
+                                                <button type="submit" class="btn btn-success" id="btnRedeemPoints">Xác nhận</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <div class="visible-lg" style="height: 100px;"></div>
+                                </div>
+                            </div>
+
+                        </div> <!-- end col -->
+
+                    </div>
+                    <!-- end row -->
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+    </div>
+</section>
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            // Xử lý sự kiện bấm nút xác nhận quy đổi điểm
+            $('body').on('click', '#btnRedeemPoints', function () {
+                var pointsToRedeem = $('#ddPointsToRedeem').val(); // Lấy số điểm được chọn
+
+                if (!pointsToRedeem) {
+                    alert("Vui lòng chọn số điểm để quy đổi."); // Kiểm tra giá trị hợp lệ
+                    return;
+                }
+
+                $.ajax({
+                    url: '/order/RedeemPoints', // Thay bằng URL thực tế xử lý
+                    type: 'POST',
+                    data: { pointsToRedeem: pointsToRedeem },
+                    success: function (res) {
+                        if (res.Success) {
+                            // Cập nhật thông báo
+                            location.reload();
+
+                            // Hiển thị thông báo thành công
+                            swal("Quy đổi điểm thành công!", "Mã giảm giá: " + res.DiscountCode, "success");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+}

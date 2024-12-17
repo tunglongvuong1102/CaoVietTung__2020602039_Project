@@ -1,0 +1,94 @@
+﻿@model PagedList.IPagedList<WebBanHangOnline.Models.EF.Support>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+
+
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="/admin/home">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/support">Hỗ trợ khách hàng</a></li>
+                    </ol>
+                </div>
+                <h4 class="page-title">Quản lý hỗ trợ</h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách yêu cầu hỗ trợ</h3>
+        </div>
+        <div class="card-body">
+            <div class="card-body table-responsive">
+                <table class="table m-0 table-colored-bordered table-bordered-purple">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Mã hỗ trợ</th>
+                            <th>Tiêu đề</th>
+                            <th>Nội dung</th>
+                            <th>Trạng thái</th>
+                            <th>Khởi tạo</th>
+                            <th>Cập nhật</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Title</td>
+                                    <td>@item.Content</td>
+                                    <td>
+                                        @if (item.Status == "Chờ phản hồi")
+                                        {
+                                            <span>Chờ phản hồi</span>
+                                        }
+                                        @if (item.Status == "Đã phản hồi")
+                                        {
+                                            <span>Đã phản hồi</span>
+                                        }
+                                    </td>
+                                    <td>@item.CreateDate</td>
+                                    <td>@item.ModifiedDate</td>
+                                    <td>
+                                        @if (item.Status == "Chờ phản hồi")
+                                        {
+                                            <a href="/admin/support/edit/@item.Id" class="btn btn-sm btn-danger">Phản hồi</a>
+                                        }
+                                        @if (item.Status == "Đã phản hồi")
+                                        {
+                                            <a href="/admin/support/edit/@item.Id" class="btn btn-sm btn-success">Xem chi tiết</a>
+                                        }
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+                
+                <div class="row">
+                    <div class="col-6" style="text-align:right;">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+</div>

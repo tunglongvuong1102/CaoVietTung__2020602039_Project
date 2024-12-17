@@ -1,0 +1,100 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Product>
+@{
+    ViewBag.Title = "Kết quả tìm kiếm";
+}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+
+<!-- Product -->
+<div style="height: 30px;"></div>
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <div class="flex-w flex-sb-m p-b-52 fix">
+            <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+                @Html.Action("MenuLeft", "Menu")
+            </div>
+            <div class="flex-w flex-c-m m-tb-10">
+                <!-- Price Range Filtering -->
+                <div class="sidebar_section">
+                    <div class="filter_button"><span>Chọn</span></div>
+                        <p>
+                            <input type="text" id="amount" readonly style="border: 0; color: #652c7e; font-weight: bold;">
+                            <input type="hidden" id="FromAmount" />
+                            <input type="hidden" id="ToAmount" />
+                        </p>
+                        <div id="slider-range"></div>
+                        
+                </div>
+            </div>
+        </div>
+        @if (!Model.Any())
+        {
+    <p>Không tìm thấy sản phẩm nào phù hợp với từ khóa.</p>
+        }
+        else
+        {
+        <div class="row isotope-grid">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    var strImge = "";
+                    var img = item.ProductImage.FirstOrDefault(x => x.IsDefault);
+                    if (img != null)
+                    {
+                        strImge = img.Image;
+                    }
+                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item  @item.ProductCategory.Alias">
+                        <div class="product discount product_filter">
+                            <!-- Block2 -->
+                            <div class="block2-pic hov-img0">
+                                <img src="@strImge" alt="@item.Title">
+                                @if (item.PriceSale < item.Price)
+                                {
+                                    <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>}
+                                <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn3 p-lr-15 trans-04 js-addcart-detail btnAddToCart" data-id="@item.Id">
+                                    Thêm vào giỏ
+                                </a>
+                            </div>
+
+                            <div class="block2-txt flex-w flex-t p-t-14">
+                                <div class="block2-txt-child1 flex-col-l ">
+
+                                    <a href="/chi-tiet/@item.Alias-p@(item.Id)" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                        @item.Title
+                                    </a>
+                                    @if (item.PriceSale < item.Price)
+                                    {<div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span></div>
+
+                                    <div style="display:none;" class="in_product_price"> @item.PriceSale</div>
+                                    }
+                                    @if (item.Price == item.PriceSale)
+                                    {
+                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                        <div style="display:none;" class="in_product_price"> @item.Price</div>
+                                    }
+                                </div>
+
+                                <div class="block2-txt-child2 flex-r p-t-3">
+                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                        <img class="icon-heart1 dis-block trans-04" src="~/Feassets/images/icons/icon-heart-01.png" alt="ICON">
+                                        <img class="icon-heart2 dis-block trans-04 ab-t-l" src="~/Feassets/images/icons/icon-heart-02.png" alt="ICON">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+    </div>
+        }
+</div>
+    </div>
+@section scripts{
+    <!-- jQuery & jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+}

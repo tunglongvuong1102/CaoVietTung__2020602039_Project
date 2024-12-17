@@ -1,0 +1,48 @@
+﻿@model WebBanHangOnline.Models.EF.Support
+
+@{
+    ViewBag.Title = "Tạo yêu cầu hỗ trợ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<div style="height: 50px;"></div>
+<!-- breadcrumb -->
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+            Trang chủ
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <a href="/ho-tro" class="stext-109 cl8 hov-cl1 trans-04">
+            Hỗ trợ
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        <span class="stext-109 cl4">
+            Tạo yêu cầu hỗ trợ
+        </span>
+    </div>
+</div>
+<div class="bg0 p-t-62 p-b-60">
+    <div class="container">
+        <!-- Main content -->
+        <section class="content">
+            @using (Html.BeginForm("Create", "Support", FormMethod.Post, new { }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Nhập tiêu đề" })
+                </div>
+
+                <div class="form-group">
+                    <label>Nội dung</label>
+                    @Html.TextAreaFor(m => m.Content, new { @class = "form-control", placeholder = "Nhập nội dung" })
+                </div>
+
+                <button type="submit" class="btn btn-success">Gửi yêu cầu</button>
+            }
+        </section>
+</div>
+</div>

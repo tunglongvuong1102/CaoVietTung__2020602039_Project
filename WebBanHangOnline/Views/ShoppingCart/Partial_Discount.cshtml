@@ -1,0 +1,54 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.DiscountCode>
+
+<div class="form-group">
+    <label>Mã giảm giá</label>
+    <select class="form-control" id="discountCode">
+        <option value="">Áp dụng mã</option>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+<option value="@item.Id">@item.Code - Giảm @item.DiscountPercentage%</option>
+ }
+}
+else
+{
+<option value="">Không có mã giảm giá</option>
+}
+    </select>
+</div>
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '#discountCode', function () {
+                var discountId = $(this).val();
+                console.log('Select element: ', $(this)); // Kiểm tra phần tử
+                console.log('Value: ', $(this).val());   // Kiểm tra giá trị
+                if (discountId) {
+                    $.ajax({
+                        url: '/ShoppingCart/UpdateDiscount',
+                        type: 'POST',
+                        data: { discountId: discountId },
+                        success: function (rs) {
+                            if (rs.Success) {
+                                // Cập nhật lại nội dung của Partial_Item_ThanhToan
+                                LoadCheckOut();
+                            } else {
+                                alert("Không thể cập nhật giảm giá.");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Có lỗi xảy ra khi gửi yêu cầu.");
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    alert("Vui lòng chọn mã giảm giá.");
+                }
+            });
+        });
+    </script>
+
+}
+

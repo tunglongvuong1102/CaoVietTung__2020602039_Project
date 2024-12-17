@@ -1,0 +1,80 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.ShoppingCartItem>
+@using WebBanHangOnline.Common
+<div id="load_data">
+    <div class="wrap-table-shopping-cart">
+        <div class="table-responsive">
+            <table class="table m-0 table-colored-bordered table-bordered-purple">
+                <thead>
+                    <tr class="">
+                        <th>#</th>
+                        <th>Sản phẩm</th>
+                        <th></th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var i = 0;
+                        var tongTien = decimal.Zero;
+                        foreach (var item in Model)
+                        {
+                            tongTien += item.TotalPrice;
+                            <tr id="trow_@item.ProductId">
+                                <td>@(i+1)</td>
+                                <td class="column-2">
+                                    <div class="how-itemcart1">
+                                        <img src="@item.ProductImg" alt="IMG">
+                                    </div>
+                                </td>
+                                <td><a href="/chi-tiet/@item.Alias-p@(item.ProductId)">@item.ProductName</a></td>
+                                <td>@Common.FormatNumber(item.Price, 0)</td>
+                                <td>
+                                    <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                        <!-- Nút giảm số lượng -->
+                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m btn-decrease" data-id="@item.ProductId">
+                                            <i class="fs-16 zmdi zmdi-minus"></i>
+                                        </div>
+
+                                        <!-- Input số lượng sản phẩm -->
+                                        <input class="mtext-104 cl3 txt-center num-product"
+                                               id="Quantity_@item.ProductId"
+                                               type="number"
+                                               name="num-product1"
+                                               value="@item.Quantity"
+                                               onchange="updateQuantity(@item.ProductId, this.value)">
+
+                                        <!-- Nút tăng số lượng -->
+                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m btn-increase" data-id="@item.ProductId">
+                                            <i class="fs-16 zmdi zmdi-plus"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@Common.FormatNumber(item.TotalPrice, 2)</td>
+                                <td>
+                                    <a href="#" data-id="@item.ProductId" class="btn btn-sm btn-danger btnDelete">X</a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        TempData["TongTien"] = tongTien;
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <th colspan="7">Không có sản phẩm trong giỏ hàng!!</th>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <div class="flex-c-m stext-101 cl2 size-119 p-lr-15 trans-04 m-tb-10">
+        Tạm tính:<h4 style="color: #652c7e">@Common.FormatNumber(TempData["TongTien"], 0)</h4><p style="color: #652c7e">vnd</p>
+    </div>
+</div>

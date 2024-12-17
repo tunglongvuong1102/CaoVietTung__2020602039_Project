@@ -1,0 +1,72 @@
+﻿@model WebBanHangOnline.Models.LoginViewModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutLogin.cshtml";
+
+
+}
+<div class="home-btn d-none d-sm-block">
+    <a href="/admin/account/login"><i class="fas fa-home h2"></i></a>
+</div>
+<div class="account-pages my-5 pt-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div>
+
+                    <div class="text-center authentication-logo mb-4">
+                        <a href="/admin/account/login" class="logo-dark">
+                            <span><img src="~/ContentAD/assets/images/medicare-logo.png" alt="" height="50"></span>
+                        </a>
+                        <a href="/admin/account/login" class="logo-light">
+                            <span><img src="~/ContentAD/assets/images/medicare-logo.png" alt="" height="50"></span>
+                        </a>
+                    </div>
+
+
+                    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true);
+                        <div class="form-group mb-3">
+                            <label for="username">Tài khoản</label>
+                            @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", @placeholder = "Tài khoản" })
+                            @*<input class="form-control" type="email" id="emailaddress" required="" placeholder="Enter your email">*@
+                        </div>
+
+                        @*<a href="page-recoverpw.html" class="text-muted float-right">Forgot your password?</a>*@
+
+                        <div class="form-group mb-3">
+                            <label for="password">Mật khẩu</label>
+                            @Html.PasswordFor(x => x.Password, new { @class = "form-control", @placeholder = "Mật khẩu" })
+                            @*<input class="form-control" type="password" required="" id="password" placeholder="Enter your password">*@
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="custom-control custom-checkbox">
+                                @Html.CheckBoxFor(x => x.RememberMe)
+                                <label>Remember me</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center mb-3">
+                            <button class="btn btn-purple btn-rounded waves-effect waves-light" type="submit"> Xác nhận </button>
+                        </div>
+                    }
+
+                </div>
+                <!-- end card -->
+
+                
+                <!-- end row -->
+
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+<!-- end page -->
+
+
+

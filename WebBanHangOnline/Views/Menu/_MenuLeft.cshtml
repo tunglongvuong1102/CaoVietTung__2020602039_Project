@@ -1,0 +1,22 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.ProductCategory>
+
+@if (Model != null && Model.Any())
+{
+
+    foreach (var item in Model)
+    {
+        if (ViewBag.CateAlias == item.Alias)
+        {
+    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter=".@item.Alias">
+        @item.Title
+    </button>
+
+        }
+        else
+        {
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".@item.Alias">
+        @item.Title
+    </button>
+        }
+    }
+}

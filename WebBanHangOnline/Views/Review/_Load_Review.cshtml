@@ -1,0 +1,32 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.ReviewProduct>
+<div class="">
+    <h4 style="color: #652c7e">Đánh giá của khách hàng (@ViewBag.Count)</h4>
+</div>
+<hr />
+<!-- User Review -->
+@if (Model != null && Model.Any())
+{
+    foreach (var item in Model)
+    {
+<div class="user_review_container d-flex flex-column flex-sm-row">
+    <div class="user">
+        <div class="user_pic"></div>
+        <div class="user_rating">
+            <ul class="star_rating">
+                @Html.Raw(WebBanHangOnline.Common.Common.HtmlRate(item.Rate))
+            </ul>
+        </div>
+    </div>
+    <div class="review">
+        <div class="review_date" style="color: #652c7e">@item.CreatedDate.ToString("dd MM yyyy")</div>
+        <div class="user_name">@item.FullName</div>
+        <p>@item.Content</p>
+    </div>
+</div> 
+    }
+            }
+            else
+            {
+                <h4>Chưa có đánh giá sản phẩm!!</h4>
+            }
+

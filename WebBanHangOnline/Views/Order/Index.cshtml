@@ -1,0 +1,228 @@
+﻿@model PagedList.IPagedList<WebBanHangOnline.Models.EF.Order>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Danh sách đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<style>
+    td {
+        color: black;
+    }
+</style>
+<div style="height: 50px;"></div>
+<!-- breadcrumb -->
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+            Trang chủ
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+            Lịch sử đơn hàng
+        </span>
+    </div>
+</div>
+<div class="bg0 p-t-62 p-b-60">
+    <div class="container">
+        <!-- Main content -->
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="card-body table-responsive">
+                <table class="table m-0 table-colored-bordered table-bordered-purple">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Tên Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Tổng tiền</th>
+                            <th>Phương thức</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.Code</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.Phone</td>
+                                    <td>@WebBanHangOnline.Common.Common.FormatNumber(item.TotalAmount, 0)</td>
+                                    <td>@(item.TypePayment==1?"COD":"Chuyển khoản")</td>
+                                    <td>
+                                        @if (item.Status == 1)
+                                        {
+                                            <span>Chuẩn bị hàng</span>
+                                        }
+                                        @if (item.Status == 2)
+                                        {
+                                            <span>Đang vận chuyển</span>
+                                        }
+                                        @if (item.Status == 3)
+                                        {
+                                            <span>Đã giao hàng</span>
+                                        }
+                                        @if (item.Status == 4)
+                                        {
+                                            <span>Hoàn thành</span>
+                                        }
+                                        @if (item.Status == 5)
+                                        {
+                                            <span>Đã hủy</span>
+                                        }
+                                    </td>
+                                    <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <a href="/order/view/@item.Id" class="btn btn-sm btn-success">Chi tiết</a>
+                                        @if (item.Status == 1 && item.TypePayment == 1)
+                                        {
+                                            <a href="#" class="btn btn-sm btn-danger btnHuy" data-id="@item.Id">Hủy đơn</a>
+                                        }
+                                        @if (item.Status == 3)
+                                        {
+                                            <a href="#" class="btn btn-sm btn-primary btnNhan" data-id="@item.Id">Đã nhận</a>
+                                        }
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-6" style="text-align:right;">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <!-- /.card-footer-->
+            <!-- /.card -->
+
+        </section>
+        <!-- /.content -->
+
+        <div class="modal fade" id="modal-default">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Bạn có chắc chắn muốn hủy đơn hàng?</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="txtOrderId" value="0" />
+                        <div class="form-group">
+                            <select class="form-control" id="ddTrangThai">
+                                <option value="5">
+                                    Xác nhận hủy đơn hàng
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                        <button type="button" class="btn btn-success" id="btnXacNhan">Xác nhận</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="modal-default-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Bạn đã nhận được đơn hàng?</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="txtOrderId1" value="0" />
+                        <div class="form-group">
+                            <select class="form-control" id="ddTrangThai1">
+                                <option value="4">
+                                    Đã nhận đơn hàng
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                        <button type="button" class="btn btn-success" id="btnXacNhan1">Xác nhận</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnHuy', function () {
+                var id = $(this).data("id");
+                $('#txtOrderId').val(id);
+                $('#modal-default').modal('show');
+            });
+            $('body').on('click', '.btnNhan', function () {
+                var id = $(this).data("id");
+                $('#txtOrderId1').val(id);
+                $('#modal-default-1').modal('show');
+            });
+
+            $('body').on('click', '#btnXacNhan', function () {
+                var id = $('#txtOrderId').val();
+                var tt = $('#ddTrangThai').val();
+                $.ajax({
+                    url: '/order/UpdateTT',
+                    type: 'POST',
+                    data: { id: id, trangthai: tt },
+                    success: function (res) {
+                        if (res.Success) {
+                            location.reload();
+                            swal("Cập nhật đơn hàng thành công", "success");
+                        }
+                    }
+                });
+            });
+            $('body').on('click', '#btnXacNhan1', function () {
+                var id = $('#txtOrderId1').val();
+                var tt = $('#ddTrangThai1').val();
+                $.ajax({
+                    url: '/order/UpdateTT',
+                    type: 'POST',
+                    data: { id: id, trangthai: tt },
+                    success: function (res) {
+                        if (res.Success) {
+                            location.reload();
+                            swal("Cập nhật đơn hàng thành công", "success");
+                        }
+                    }
+                });
+                
+            });
+           
+        });
+    </script>
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+}
